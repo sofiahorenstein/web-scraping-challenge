@@ -32,7 +32,7 @@ def scrape_nasa_mars_news():
         mars_db['news_paragraph'] = news_p
 
         
-        return mars_db
+         return mars_db
 
     finally:
 
@@ -68,4 +68,86 @@ def scrape_JPL_space_images():
 
     finally:
 
+        browser.quit()
+        
+#scrape NASA MARS NEWS 
+def scrape_mars_weather():
+    try:
+        browser= init_browser()
+        
+        weather_url = 'https://twitter.com/marswxreport?lang=en'
+        browser.visit(weather_url)
+        html_weather = browser.html
+        weather_soup = bs(html_weather, 'html.parser')
+
+        mars_weather = weather_soup.find('p', class_="TweetTextSize TweetTextSize--normal js-tweet-text tweet-text").text
+        print(f"mars_weather = {mars_weather}")
+
+        mars_db['mars_weather'] = mars_weather
+
+        
+        return mars_db
+
+    finally:
+
+        browser.quit()
+ 
+        
+#scrape Mars facts
+def scrape_mars_facts():
+    try:
+        
+        mars_facts_url = 'https://space-facts.com/mars/' 
+
+        mars_facts = pd.read_html(mars_facts_url)
+                
+        mars_facts_df = mars_facts[1]
+
+        mars_facts_df.columns = ['Description','Value']
+
+        mars_facts_df.set_index('Description', inplace=True)
+                
+        mars_facts_data = mars_facts_df.to_html()
+                
+        mars_db['mars_facts'] = mars_facts_data
+
+        
+        return mars_db
+    
+        
+#scrape mars hemispheres 
+        
+def scrape_mars_hemispheres():
+    try:
+        
+        hemisphere_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+        browser.visit(hemisphere_url)
+        html_hemisphere = browser.html
+        soup = bs(html_hemisphere, 'html.parser')
+        
+        results = soup.find_all('div', class_='item')
+        hemisphere_image_urls = []
+
+        hemisphere_main_url = 'https://astrogeology.usgs.gov'
+
+        for result in results: 
+    
+            title = result.find('h3').text
+            partial_image_url = result.find('a', class_='itemLink product-item')['href']
+        
+            browser.visit(hemisphere_main_url + partial_image_url)
+    
+            partial_image_html = browser.html
+    
+            soup = bs(partial_image_html, 'html.parser')
+    
+            img_url = hemisphere_main_url + soup.find('img', class_='wide-image')['src']
+    
+            hemisphere_image_urls.append({"title" : title, "img_url" : img_url})
+        
+        mars_db['hemisphere_image_urls'] = hemisphere_image_urls
+        
+        return mars_db
+    
+    finally:
         browser.quit()
