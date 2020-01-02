@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup as bs
 import requests
 import pandas as pd
 from splinter import Browser
+import time 
 
 def init_browser():
     # @NOTE: Replace the path with your actual path to the chromedriver
@@ -15,7 +16,7 @@ mars_db = {}
 def scrape_nasa_mars_news():
     try:
         browser= init_browser()
-        
+        time.sleep(3)
         url = 'https://mars.nasa.gov/news/'
         browser.visit(url)   
         html = browser.html
@@ -31,12 +32,9 @@ def scrape_nasa_mars_news():
         mars_db['news_title'] = news_title
         mars_db['news_paragraph'] = news_p
 
-        
-         return mars_db
-
-    finally:
-
-        browser.quit()
+        return mars_db
+    except:
+        pass
         
 #scrape NASA MARS NEWS 
 def scrape_JPL_space_images():
@@ -46,7 +44,7 @@ def scrape_JPL_space_images():
         image_url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
         browser.visit(image_url)
         html_img = browser.html
-        soup = bs(html_img, 'html.parser')
+        image_soup = bs(html_img, 'html.parser')
 
         #results = soup.find_all('li', class_="slide")
     
@@ -57,18 +55,17 @@ def scrape_JPL_space_images():
         #print(img_link)
         main_url = 'https://www.jpl.nasa.gov'
         featured_image_url = main_url + img_link
-        print(featured_image_url)
-            
+        #print(featured_image_url)
+             
 
         #create dictionary entry for mars news info
         mars_db['featured_image_url'] = featured_image_url
 
         
         return mars_db
+    except:
+        pass
 
-    finally:
-
-        browser.quit()
         
 #scrape NASA MARS NEWS 
 def scrape_mars_weather():
@@ -81,16 +78,14 @@ def scrape_mars_weather():
         weather_soup = bs(html_weather, 'html.parser')
 
         mars_weather = weather_soup.find('p', class_="TweetTextSize TweetTextSize--normal js-tweet-text tweet-text").text
-        print(f"mars_weather = {mars_weather}")
+        #print(f"mars_weather = {mars_weather}")
 
         mars_db['mars_weather'] = mars_weather
 
         
         return mars_db
-
-    finally:
-
-        browser.quit()
+    except:
+        pass
  
         
 #scrape Mars facts
@@ -110,44 +105,7 @@ def scrape_mars_facts():
         mars_facts_data = mars_facts_df.to_html()
                 
         mars_db['mars_facts'] = mars_facts_data
-
         
         return mars_db
-    
-        
-#scrape mars hemispheres 
-        
-def scrape_mars_hemispheres():
-    try:
-        
-        hemisphere_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
-        browser.visit(hemisphere_url)
-        html_hemisphere = browser.html
-        soup = bs(html_hemisphere, 'html.parser')
-        
-        results = soup.find_all('div', class_='item')
-        hemisphere_image_urls = []
-
-        hemisphere_main_url = 'https://astrogeology.usgs.gov'
-
-        for result in results: 
-    
-            title = result.find('h3').text
-            partial_image_url = result.find('a', class_='itemLink product-item')['href']
-        
-            browser.visit(hemisphere_main_url + partial_image_url)
-    
-            partial_image_html = browser.html
-    
-            soup = bs(partial_image_html, 'html.parser')
-    
-            img_url = hemisphere_main_url + soup.find('img', class_='wide-image')['src']
-    
-            hemisphere_image_urls.append({"title" : title, "img_url" : img_url})
-        
-        mars_db['hemisphere_image_urls'] = hemisphere_image_urls
-        
-        return mars_db
-    
-    finally:
-        browser.quit()
+    except:
+        pass

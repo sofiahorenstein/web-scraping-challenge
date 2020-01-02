@@ -1,0 +1,24 @@
+.body {
+    background-color: lightgray;
+  }
+
+
+.display-4 {
+    color:  black;
+    font-size: 50px;
+}
+
+.my-4 {
+   color: black;
+   font-size: 10 px; 
+}
+
+.h1 {
+    color: black;
+    font-size: 30 px; 
+ }
+
+ .h3 {
+    color: black;
+    font-size: 15 px; 
+ }

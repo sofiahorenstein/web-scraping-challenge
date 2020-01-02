@@ -193,11 +193,71 @@ def scrape_mars_hemispheres():
         
         
         
+#scrape mars hemispheres 
+def scrape_mars_hemispheres():
         
+    hemisphere_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser.visit(hemisphere_url)
+    html_hemisphere = browser.html
+    soup = bs(html_hemisphere, 'html.parser')
+        
+    results = soup.find_all('div', class_='item')
+    hemisphere_image_urls = []
+
+    hemisphere_main_url = 'https://astrogeology.usgs.gov'
+
+    for result in results: 
+
+        title = result.find('h3').text
+        partial_image_url = result.find('a', class_='itemLink product-item')['href']
+    
+        browser.visit(hemisphere_main_url + partial_image_url)
+
+        partial_image_html = browser.html
+
+        soup = bs(partial_image_html, 'html.parser')
+
+        img_url = hemisphere_main_url + soup.find('img', class_='wide-image')['src']
+
+        hemisphere_image_urls.append({"title" : title, "img_url" : img_url})
+    
+    mars_db['hemisphere_image_urls'] = hemisphere_image_urls
+    
+    return mars_db
 
         
 
+   #scrape mars hemispheres 
+def scrape_mars_hemispheres():
         
+    hemisphere_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser.visit(hemisphere_url)
+    html_hemisphere = browser.html
+    soup = bs(html_hemisphere, 'html.parser')
+        
+    results = soup.find_all('div', class_='item')
+    hemisphere_image_urls = []
+
+    hemisphere_main_url = 'https://astrogeology.usgs.gov'
+
+    for result in results: 
+
+        title = result.find('h3').text
+        partial_image_url = result.find('a', class_='itemLink product-item')['href']
+    
+        browser.visit(hemisphere_main_url + partial_image_url)
+
+        partial_image_html = browser.html
+
+        soup = bs(partial_image_html, 'html.parser')
+
+        img_url = hemisphere_main_url + soup.find('img', class_='wide-image')['src']
+
+        hemisphere_image_urls.append({"title" : title, "img_url" : img_url})
+    
+    mars_db['hemisphere_image_urls'] = hemisphere_image_urls
+    
+    return mars_db    
         
         
         
