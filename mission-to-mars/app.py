@@ -1,6 +1,8 @@
 from flask import Flask, render_template, redirect
 from flask_pymongo import PyMongo
 import scrape_mars2
+from splinter import Browser
+
 # Create an instance of Flask
 app = Flask(__name__)
 # Use PyMongo to establish Mongo connection
@@ -23,12 +25,12 @@ def scrape():
     mars_db_data = {}
     # Run the scrape function
     mars_db = mongo.db.mars_db
-    mars_db_data['news'] = scrape_mars2.scrape_nasa_mars_news()
-    mars_db_data['images'] = scrape_mars2.scrape_JPL_space_images()
-    mars_db_data['weather'] = scrape_mars2.scrape_mars_weather()
-    mars_db_data['facts'] = scrape_mars2.scrape_mars_facts()
+    mars_db_data["news"] = scrape_mars2.scrape_nasa_mars_news(browser)
+    mars_db_data["images"] = scrape_mars2.scrape_JPL_space_images(browser)
+    mars_db_data["weather"] = scrape_mars2.scrape_mars_weather(browser)
+    mars_db_data["facts"] = scrape_mars2.scrape_mars_facts()
     #mars_db_data = scrape_mars2.scrape_mars_hemispheres()
-    print(mars_db_data)
+  
     # Update the Mongo database using update and upsert=True
     mars_db.update({}, mars_db_data, upsert=True)
     # Redirect back to home page

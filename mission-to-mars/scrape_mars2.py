@@ -2,12 +2,12 @@ from bs4 import BeautifulSoup as bs
 import requests
 import pandas as pd
 from splinter import Browser
-import time 
+#import time 
 
 def init_browser():
     # @NOTE: Replace the path with your actual path to the chromedriver
-    executable_path = {"executable_path": "/usr/local/bin/chromedriver"}
-    return Browser("chrome", **executable_path, headless=False)
+    executable_path = {'executable_path': '/Users/sofiahorenstein/Downloads/chromedriver 3'}
+    browser = Browser('chrome', **executable_path, headless=False)
 
 #create dictionary to append mars scraping info for mongodb
 mars_db = {}
@@ -16,7 +16,6 @@ mars_db = {}
 def scrape_nasa_mars_news():
     try:
         browser= init_browser()
-        time.sleep(3)
         url = 'https://mars.nasa.gov/news/'
         browser.visit(url)   
         html = browser.html
@@ -35,6 +34,7 @@ def scrape_nasa_mars_news():
         return mars_db
     except:
         pass
+   
         
 #scrape NASA MARS NEWS 
 def scrape_JPL_space_images():
@@ -65,7 +65,7 @@ def scrape_JPL_space_images():
         return mars_db
     except:
         pass
-
+    
         
 #scrape NASA MARS NEWS 
 def scrape_mars_weather():
@@ -77,7 +77,7 @@ def scrape_mars_weather():
         html_weather = browser.html
         weather_soup = bs(html_weather, 'html.parser')
 
-        mars_weather = weather_soup.find('p', class_="TweetTextSize TweetTextSize--normal js-tweet-text tweet-text").text
+        mars_weather = weather_soup.find('p', class_="TweetTextSize TweetTextSize--normal js-tweet-text tweet-text").get_text()
         #print(f"mars_weather = {mars_weather}")
 
         mars_db['mars_weather'] = mars_weather
@@ -86,7 +86,7 @@ def scrape_mars_weather():
         return mars_db
     except:
         pass
- 
+   
         
 #scrape Mars facts
 def scrape_mars_facts():
@@ -109,3 +109,35 @@ def scrape_mars_facts():
         return mars_db
     except:
         pass
+    
+#scrape mars hemispheres 
+#def scrape_mars_hemispheres():
+        
+    #hemisphere_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    #browser.visit(hemisphere_url)
+    #html_hemisphere = browser.html
+    #soup = bs(html_hemisphere, 'html.parser')
+        
+    #results = soup.find_all('div', class_='item')
+    #hemisphere_image_urls = []
+
+    #hemisphere_main_url = 'https://astrogeology.usgs.gov'
+
+    #for result in results: 
+
+        #title = result.find('h3').text
+        #partial_image_url = result.find('a', class_='itemLink product-item')['href']
+    
+        #browser.visit(hemisphere_main_url + partial_image_url)
+
+        #partial_image_html = browser.html
+
+        #soup = bs(partial_image_html, 'html.parser')
+
+        #img_url = hemisphere_main_url + soup.find('img', class_='wide-image')['src']
+
+        #hemisphere_image_urls.append({"title" : title, "img_url" : img_url})
+    
+        #mars_db['hemisphere_image_urls'] = hemisphere_image_urls
+    
+    return mars_db
